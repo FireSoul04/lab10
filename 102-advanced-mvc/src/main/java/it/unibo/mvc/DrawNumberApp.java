@@ -1,8 +1,6 @@
 package it.unibo.mvc;
 
 import java.io.FileNotFoundException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,9 +26,12 @@ public final class DrawNumberApp implements DrawNumberViewObserver {
             view.setObserver(this);
             view.start();
         }
-        final List<String> lines = Files.readAllLines(Path.of(CONFIGURATION_FILE));
-        lines.forEach(s -> s.split(":"));
-        this.model = new DrawNumberImpl(MIN, MAX, ATTEMPTS);
+        
+        final ConfigFileParser parsedConfig = new ConfigFileParser(CONFIGURATION_FILE);
+        final int min = Integer.valueOf(parsedConfig.get("minimum"));
+        final int max = Integer.valueOf(parsedConfig.get("maximum"));
+        final int attempts = Integer.valueOf(parsedConfig.get("attempts"));
+        this.model = new DrawNumberImpl(min, max, attempts);
     }
 
     @Override
