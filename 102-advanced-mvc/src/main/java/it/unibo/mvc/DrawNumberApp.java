@@ -5,10 +5,12 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * 
  */
 public final class DrawNumberApp implements DrawNumberViewObserver {
     
     private static final String CONFIGURATION_FILE = "src/main/resources/config.yml";
+    private static final String LOGGER_FILE = "src/main/resources/info.log";
 
     private final DrawNumber model;
     private final List<DrawNumberView> views;
@@ -26,7 +28,6 @@ public final class DrawNumberApp implements DrawNumberViewObserver {
             view.setObserver(this);
             view.start();
         }
-        
         final ConfigFileParser parsedConfig = new ConfigFileParser(CONFIGURATION_FILE);
         final int min = Integer.valueOf(parsedConfig.get("minimum"));
         final int max = Integer.valueOf(parsedConfig.get("maximum"));
@@ -70,7 +71,17 @@ public final class DrawNumberApp implements DrawNumberViewObserver {
      * @throws FileNotFoundException 
      */
     public static void main(final String... args) throws FileNotFoundException {
-        new DrawNumberApp(new DrawNumberViewImpl());
+        final DrawNumberView swingView1 = new DrawNumberViewImpl();
+        final DrawNumberView swingView2 = new DrawNumberViewImpl();
+        final PrintStreamView fileLogger = new PrintStreamView(LOGGER_FILE);
+        final PrintStreamView standardOut = new PrintStreamView(System.out);
+
+        new DrawNumberApp(
+            swingView1,
+            swingView2,
+            fileLogger,
+            standardOut
+        );
     }
 
 }

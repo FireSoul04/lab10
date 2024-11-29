@@ -11,22 +11,30 @@ public class ConfigFileParser {
 
     private final Map<String, String> parsedConfig;
 
+    /**
+     * Create a wrapper for the configuration file.
+     * @param configPath path to the configuration file
+     */
     public ConfigFileParser(final String configPath) {
-        List<String> lines = List.of();
+        this.parsedConfig = new HashMap<>();
         try {
-            lines = Files.readAllLines(Path.of(configPath));
+            final List<String> lines = Files.readAllLines(Path.of(configPath));
+            lines.forEach(s -> {
+                final String[] tokens = s.split(": ");
+                this.parsedConfig.put(tokens[0], tokens[1]);
+            });
         } catch (IOException e) {
             System.out.println(e); // NOPDM: exercise
             System.exit(0);
         }
-        this.parsedConfig = new HashMap<>();
-        lines.forEach(s -> {
-            final String[] tokens = s.split(": ");
-            this.parsedConfig.put(tokens[0], tokens[1]);
-        });
     }
 
+    /**
+     * @param key that identifies that data
+     * @return data associated with key
+     */
     public String get(final String key) {
         return this.parsedConfig.get(key);
     }
 }
+ 
